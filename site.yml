@@ -1,0 +1,20 @@
+---
+# Deploy the LAMP stack, laravel, and the application.
+
+- name: common node configuration
+  hosts: all
+  sudo: true
+  roles:
+    - common
+
+- name: install and configure the web tier
+  hosts: webservers
+  sudo: true
+  roles:
+    - web
+
+- name: install, configure, and deploy the database tier
+  hosts: dbserver
+  sudo: true
+  roles:
+    - db

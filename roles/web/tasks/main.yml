@@ -1,0 +1,6 @@
+---
+# Installs and configures the web server, and deploys the web application.
+
+- name: install apache
+  apt: name=apache2 state=latest
+

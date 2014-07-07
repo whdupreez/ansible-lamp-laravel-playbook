@@ -1,0 +1,6 @@
+---
+# Common plays to be run all managed nodes.
+
+- name: install git using apt
+  apt: name=git update_cache=yes cache_valid_time=7200
+
