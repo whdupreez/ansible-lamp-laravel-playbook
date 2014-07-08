@@ -1,6 +1,41 @@
 ---
-# Installs and configures the web server, and deploys the web application.
+# ------------------------------------------------------------------------- #
+# Installs and configures the web server, and deploys the web application.  #
+# ------------------------------------------------------------------------- #
+
+# Update Cache
+
+- name: update apt cache
+  apt: update_cache=yes cache_valid_time=7200
+
+# Apache
 
 - name: install apache
   apt: name=apache2 state=latest
+
+- name: enable and start apache service
+  service: name=apache2 state=started enabled=yes
+
+# PHP
+
+- name: install php and dependencies
+  apt: name={{ item }} state=latest
+  with_items:
+    - mysql-client
+    - php5
+    - php5-cli
+    - php5-curl
+    - php5-intl
+    - php5-mcrypt
+    - php5-mysql
+    - php5-xdebug
+
+# Composer
+
+- name: install composer
+  shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin
+
+- name: configure composer
+  shell: mv /usr/local/bin/composer.phar /usr/local/bin/composer && chmod +x /usr/local/bin/composer
+
 
