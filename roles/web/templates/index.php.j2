@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>Info Page</title>
+  </head>
+  <body>
+
+    <?php 
+
+      echo exec('hostname');
+      echo "</br>";
+      echo "List of Databases: </br>";
+
+      {% for host in groups['dbservers'] %}
+
+      $link = mysql_connect('localhost', 'root', '') or die(mysql_error());
+
+      {% endfor %}
+      
+      $res = mysql_query("SHOW DATABASES");
+      while ($row = mysql_fetch_assoc($res)) {
+        echo $row['Database'] . "\n";
+      }
+
+    ?>
+
+    <?php phpinfo(); ?>
+
+  </body>
+</html>

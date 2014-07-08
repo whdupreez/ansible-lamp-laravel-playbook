@@ -16,6 +16,12 @@
 - name: enable and start apache service
   service: name=apache2 state=started enabled=yes
 
+- name: remove the default apache site
+  file: path=/etc/apache2/sites-enabled/{{ item }} state=absent
+  with_items:
+    - 000-default.conf
+    - default-ssl.conf
+
 # PHP
 
 - name: install php and dependencies
@@ -34,8 +40,34 @@
 
 - name: install composer
   shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin
+  args:
+    creates: /usr/local/bin/composer
 
 - name: configure composer
   shell: mv /usr/local/bin/composer.phar /usr/local/bin/composer && chmod +x /usr/local/bin/composer
+  args:
+    creates: /usr/local/bin/composer
 
+# Memcached
+
+- name: install memcached
+  apt: name=memcached state=present
+
+# Checkout Site
+
+- name: checkout site repository from git
+  git: repo={{ repository }} dest={{ site_dir }} accept_hostkey=yes
+
+# Configure Site
+
+- name: install composer components
+  command: composer update chdir={{ site_dir }}
+
+- name: install application
+  command: php artisan app:install chdir={{ site_dir }}
+
+# Configure Apache
+
+- name: configure site in apache
+  command: echo 'hello site!'
 
