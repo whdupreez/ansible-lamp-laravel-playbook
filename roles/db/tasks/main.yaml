@@ -8,3 +8,11 @@
     - mysql-client
     - python-mysqldb
 
+# Configure MySQL.
+
+- name: configure database user
+  mysql_user: name=homestead password=secret priv=*.*:ALL state=present
+
+- name: create application schema
+  mysql_db: name=homestead state=present
+

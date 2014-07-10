@@ -7,14 +7,15 @@
   roles:
     - common
 
+- name: install, configure, and deploy the database tier
+  hosts: dbserver
+  sudo: true
+  roles:
+    - db
+
 - name: install and configure the web tier
   hosts: webservers
   sudo: true
   roles:
     - web
 
-- name: install, configure, and deploy the database tier
-  hosts: dbserver
-  sudo: true
-  roles:
-    - db

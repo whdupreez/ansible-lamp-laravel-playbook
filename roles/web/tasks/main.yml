@@ -36,6 +36,15 @@
     - php5-mysql
     - php5-xdebug
 
+- name: configure php5 mcrypt
+  file: src=/etc/php5/mods-available/mcrypt.ini dest=/etc/php5/conf.d/mcrypt.ini owner=root group=root state=link
+
+- name: php5enmod mcrypt
+  command: php5enmod mcrypt
+
+- name: restart apache2
+  service: name=apache2 state=restarted
+
 # Composer
 
 - name: install composer
