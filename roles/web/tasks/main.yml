@@ -57,6 +57,9 @@
   args:
     creates: /usr/local/bin/composer
 
+- name: update composer
+  command: composer self-update
+
 # Memcached
 
 - name: install memcached
@@ -73,7 +76,7 @@
   command: composer update chdir={{ site_dir }}
 
 - name: install application
-  command: php artisan app:install chdir={{ site_dir }}
+  command: php artisan app:install --force chdir={{ site_dir }}
 
 # Configure Apache
 
