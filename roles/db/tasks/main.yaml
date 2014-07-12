@@ -10,9 +10,30 @@
 
 # Configure MySQL.
 
-- name: configure database user
-  mysql_user: name=homestead password=secret priv=*.*:ALL state=present
+- name: generate database root user password
+  command: /usr/bin/openssl rand -base64 16
+  register: db_root_password
+
+- name: update database root user password
+  mysql_user: name=root host={{ item }} password={{ db_root_password.stdout }} priv=*.*:ALL,GRANT
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+ 
+- name: copy user my.cnf file with root passwd credentials
+  template: src=my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
+ 
+- name: delete anonymous mysql user
+  mysql_user: name="" state=absent
+ 
+- name: remove mysql test database
+  mysql_db: name=test state=absent
+
+- name: configure site database user
+  mysql_user: name={{ db_site_user }} password={{ db_site_user_password }} priv=*.*:ALL state=present
 
 - name: create application schema
-  mysql_db: name=homestead state=present
+  mysql_db: name={{ db_site_schema }} state=present
 
