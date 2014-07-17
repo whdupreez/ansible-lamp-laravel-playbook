@@ -72,6 +72,9 @@
 
 # Configure Site
 
+- name: configure site environment
+  template: src={{ site_dir }}/.environment.php.j2 dest={{ site_dir }}/.environment.php owner=vagrant group=vagrant mode=0777
+
 - name: install composer components
   command: composer update chdir={{ site_dir }}
 
