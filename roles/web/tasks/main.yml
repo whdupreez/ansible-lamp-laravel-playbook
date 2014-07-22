@@ -42,6 +42,9 @@
 - name: php5enmod mcrypt
   command: php5enmod mcrypt
 
+- name: enable mod_rewrite
+  command: a2enmod rewrite
+
 - name: restart apache2
   service: name=apache2 state=restarted
 
@@ -72,8 +75,14 @@
 
 # Configure Site
 
+- name: clear the environment
+  file: path={{ site_dir }}/.environment.php state=absent
+
 - name: configure site environment
-  template: src={{ site_dir }}/.environment.php.j2 dest={{ site_dir }}/.environment.php owner=vagrant group=vagrant mode=0777
+  template: src={{ site_dir }}/.environment.php.j2 dest=/tmp/.environment.php
+
+- name: copy site environment file # VirtualBox workaround
+  command: cp /tmp/.environment.php {{ site_dir }}/.environment.php
 
 - name: install composer components
   command: composer update chdir={{ site_dir }}
